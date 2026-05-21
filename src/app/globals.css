@@ -1,17 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #041627;
-  --color-primary-800: #1a2b3c;
-  --color-primary-900: #020e1a;
+  --color-primary: #4a5b73;
+  --color-primary-800: #3c4d63;
+  --color-primary-900: #2e3f53;
 
-  --color-secondary: #775a19;
-  --color-secondary-hover: #5d4201;
-  --color-secondary-dim: #e9c176;
-  --color-secondary-fixed: #ffdea5;
-
-  --color-amber: #b45309;
-  --color-amber-soft: #d97706;
+  --color-secondary: #7a5a3a;
+  --color-secondary-hover: #5c4220;
+  --color-secondary-dim: #e8ccb0;
+  --color-secondary-fixed: #d8b699;
 
   --color-background: #f8f9fa;
   --color-surface: #ffffff;
@@ -20,20 +17,20 @@
   --color-surface-container-high: #e7e8e9;
   --color-surface-variant: #e1e3e4;
 
-  --color-on-surface: #191c1d;
+  --color-on-surface: #333333;
   --color-on-surface-variant: #44474c;
   --color-outline: #74777d;
   --color-outline-variant: #c4c6cd;
 
-  --color-navy: #041627;
-  --color-navy-800: #062d4a;
-  --color-navy-900: #020e1a;
-  --color-gold: #775a19;
-  --color-gold-dark: #5d4201;
+  --color-navy: #4a5b73;
+  --color-navy-800: #3c4d63;
+  --color-navy-900: #2e3f53;
+  --color-gold: #7a5a3a;
+  --color-gold-dark: #5c4220;
   --color-surface-2: #edeeef;
-  --color-text: #191c1d;
+  --color-text: #333333;
   --color-text-muted: #44474c;
-  --color-border: rgba(25, 28, 29, 0.08);
+  --color-border: rgba(51, 51, 51, 0.08);
 
   --font-headline: var(--font-headline), 'Manrope', system-ui, sans-serif;
   --font-body: var(--font-body), 'Inter', system-ui, sans-serif;

@@ -51,15 +51,14 @@ export default function Navbar() {
         {/* ── Logo (left) ── */}
         <Link
           href="/"
-          className="shrink-0 group flex flex-col leading-none"
+          className="shrink-0 group"
           aria-label="Del Norte Estudio Inmobiliario — Inicio"
         >
-          <span className="font-headline text-xl font-bold tracking-tight text-primary group-hover:opacity-80 transition-opacity">
-            Del<span className="text-secondary">Norte</span>
-          </span>
-          <span className="font-body text-[9px] font-semibold tracking-[0.22em] uppercase text-on-surface-variant group-hover:opacity-80 transition-opacity mt-0.5">
-            Estudio Inmobiliario
-          </span>
+          <img
+            src="/logo_dn03.svg"
+            alt="Del Norte Estudio Inmobiliario"
+            className="h-9 w-auto group-hover:opacity-80 transition-opacity"
+          />
         </Link>
 
         {/* ── Center nav (desktop) ── */}

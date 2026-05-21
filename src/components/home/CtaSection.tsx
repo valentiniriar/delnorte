@@ -16,13 +16,13 @@ export default function CtaSection() {
   return (
     <section className="py-24 md:py-32 bg-background">
       <div className="container-wide">
-        <div className="relative overflow-hidden rounded-xl bg-primary px-8 py-16 md:px-16 md:py-24 shadow-editorial-lg">
+        <div className="relative overflow-hidden rounded-xl bg-primary-900 px-8 py-16 md:px-16 md:py-24 shadow-editorial-lg">
           {/* Decorative gradient */}
           <div
             className="absolute inset-0 opacity-60"
             style={{
               background:
-                'radial-gradient(circle at 85% 20%, rgba(255,222,165,0.2) 0%, transparent 45%), radial-gradient(circle at 15% 90%, rgba(119,90,25,0.35) 0%, transparent 40%)',
+                'radial-gradient(circle at 85% 20%, rgba(216,182,153,0.22) 0%, transparent 45%), radial-gradient(circle at 15% 90%, rgba(20,30,45,0.5) 0%, transparent 40%)',
             }}
           />
 

@@ -6,24 +6,24 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#041627',
-          800: '#1a2b3c',
-          900: '#020e1a',
+          DEFAULT: '#4a5b73',
+          800: '#3c4d63',
+          900: '#2e3f53',
         },
         secondary: {
-          DEFAULT: '#775a19',
-          hover: '#5d4201',
-          dim: '#e9c176',
-          fixed: '#ffdea5',
+          DEFAULT: '#7a5a3a',
+          hover: '#5c4220',
+          dim: '#e8ccb0',
+          fixed: '#d8b699',
         },
         navy: {
-          DEFAULT: '#041627',
-          800: '#062d4a',
-          900: '#020e1a',
+          DEFAULT: '#4a5b73',
+          800: '#3c4d63',
+          900: '#2e3f53',
         },
         gold: {
-          DEFAULT: '#775a19',
-          dark: '#5d4201',
+          DEFAULT: '#7a5a3a',
+          dark: '#5c4220',
         },
         surface: {
           DEFAULT: '#ffffff',
@@ -34,7 +34,7 @@ const config: Config = {
           variant: '#e1e3e4',
         },
         background: '#f8f9fa',
-        'on-surface': '#191c1d',
+        'on-surface': '#333333',
         'on-surface-variant': '#44474c',
         outline: {
           DEFAULT: '#74777d',

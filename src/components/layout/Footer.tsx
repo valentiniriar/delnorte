@@ -33,7 +33,7 @@ export default function Footer() {
   const facebook = agency?.settings?.website_facebook ?? 'https://www.facebook.com/people/Del-Norte-Inmobiliaria-en-Jujuy/61583893247898/'
 
   return (
-    <footer className="bg-primary text-white">
+    <footer className="bg-primary-900 text-white">
       <div className="container-wide pt-20 pb-10">
         {/* Big heading */}
         <div className="border-b border-white/10 pb-16 mb-16">
@@ -58,13 +58,23 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-1 space-y-5">
-            <div>
-              <p className="font-headline text-white text-2xl font-bold tracking-tight">
-                Del<span className="text-secondary-fixed">Norte</span>
-              </p>
-              <p className="font-body text-white/50 text-[10px] tracking-[0.25em] uppercase mt-1">
-                Estudio Inmobiliario · Jujuy
-              </p>
+            <div className="flex items-center gap-3">
+              <svg
+                viewBox="0 0 1080 1080"
+                className="h-11 w-11 shrink-0"
+                aria-hidden="true"
+              >
+                <path fill="#d8b699" d="M193.98,902.34h-32.64V177.66h0c209.13,0,378.66,169.53,378.66,378.66h0c0,191.1-154.92,346.02-346.02,346.02Z"/>
+                <path fill="rgba(255,255,255,0.8)" d="M918.66,902.34h-5.42c-206.14,0-373.24-167.11-373.24-373.24V177.66h378.66v724.68Z"/>
+              </svg>
+              <div>
+                <p className="font-headline text-white text-2xl font-bold tracking-tight leading-none">
+                  Del<span className="text-secondary-fixed">Norte</span>
+                </p>
+                <p className="font-body text-white/50 text-[10px] tracking-[0.25em] uppercase mt-1">
+                  Estudio Inmobiliario · Jujuy
+                </p>
+              </div>
             </div>
             <p className="font-body text-sm leading-relaxed text-white/60 max-w-xs">
               Curaduría de propiedades en el NOA. Más de dos décadas acompañando decisiones que cambian vidas.

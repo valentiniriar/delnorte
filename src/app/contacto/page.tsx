@@ -47,12 +47,12 @@ export default async function ContactPage() {
   return (
     <div className="pt-20 bg-background">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-primary">
+      <section className="relative overflow-hidden bg-primary-900">
         <div
           className="absolute inset-0 opacity-40"
           style={{
             background:
-              'radial-gradient(circle at 80% 20%, rgba(255,222,165,0.25) 0%, transparent 45%), radial-gradient(circle at 10% 80%, rgba(119,90,25,0.4) 0%, transparent 50%)',
+              'radial-gradient(circle at 80% 20%, rgba(216,182,153,0.35) 0%, transparent 45%), radial-gradient(circle at 10% 80%, rgba(20,30,45,0.6) 0%, transparent 50%)',
           }}
         />
         <div
@@ -170,7 +170,7 @@ export default async function ContactPage() {
 
             {/* Office card + map */}
             <div className="space-y-6 lg:sticky lg:top-28 self-start">
-              <div className="relative overflow-hidden rounded-xl bg-primary p-8 md:p-10 shadow-editorial-lg">
+              <div className="relative overflow-hidden rounded-xl bg-primary-900 p-8 md:p-10 shadow-editorial-lg">
                 <div
                   className="absolute inset-0 opacity-[0.08]"
                   style={{
