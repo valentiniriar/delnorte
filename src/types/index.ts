@@ -98,4 +98,15 @@ export interface PropertyFilters {
   min_price?: number
   max_price?: number
   search?: string
+  lat_min?: number
+  lat_max?: number
+  lng_min?: number
+  lng_max?: number
+}
+
+export interface MapBounds {
+  lat_min: number
+  lat_max: number
+  lng_min: number
+  lng_max: number
 }

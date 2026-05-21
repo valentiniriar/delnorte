@@ -7,9 +7,9 @@ interface BadgeProps {
 }
 
 const typeStyles: Record<OperationType, string> = {
-  venta: 'bg-navy text-white',
-  alquiler: 'bg-gold text-navy',
-  alquiler_temporal: 'bg-navy-800 text-gold',
+  venta: 'bg-primary text-white',
+  alquiler: 'bg-secondary-fixed text-primary',
+  alquiler_temporal: 'bg-secondary text-white',
 }
 
 const typeLabels: Record<OperationType, string> = {
@@ -22,7 +22,7 @@ export default function Badge({ type, className }: BadgeProps) {
   return (
     <span
       className={cn(
-        'font-josefin text-xs font-semibold tracking-widest uppercase px-3 py-1',
+        'font-body text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5 rounded',
         typeStyles[type],
         className,
       )}

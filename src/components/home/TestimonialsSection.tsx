@@ -3,29 +3,30 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Star } from 'lucide-react'
+import { Quote } from 'lucide-react'
 import SectionLabel from '@/components/ui/SectionLabel'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const testimonials = [
   {
     quote:
-      'Encontramos nuestra casa en Tilcara gracias al equipo de Del Norte. El proceso fue transparente y muy profesional. Los recomiendo sin dudarlo.',
+      'Encontramos nuestra casa en Tilcara gracias al equipo de Del Norte. El proceso fue transparente y muy profesional.',
     name: 'Marcela R.',
-    role: 'Compradora, Tilcara',
+    role: 'Compradora · Tilcara',
   },
   {
     quote:
-      'Alquilamos un departamento en el centro de Jujuy en menos de una semana. Atención excepcional y muy buena comunicación durante todo el proceso.',
+      'Alquilamos un departamento en el centro de Jujuy en menos de una semana. Atención excepcional y comunicación permanente.',
     name: 'Carlos M.',
-    role: 'Inquilino, San Salvador de Jujuy',
+    role: 'Inquilino · San Salvador de Jujuy',
   },
   {
     quote:
-      'Vendieron mi propiedad en la Quebrada al precio que pedí. Conocen el mercado mejor que nadie en la región. Una experiencia excelente.',
+      'Vendieron mi propiedad en la Quebrada al precio que pedí. Conocen el mercado mejor que nadie en la región.',
     name: 'Ana P.',
-    role: 'Vendedora, Purmamarca',
+    role: 'Vendedora · Purmamarca',
   },
 ]
 
@@ -33,52 +34,63 @@ export default function TestimonialsSection() {
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    if (prefersReducedMotion()) return
     const ctx = gsap.context(() => {
-      gsap.from('.testimonial-card', {
-        opacity: 0,
-        y: 40,
-        stagger: 0.2,
-        duration: 0.7,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-          once: true,
+      gsap.fromTo(
+        '.testimonial-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            once: true,
+          },
         },
-      })
+      )
+      ScrollTrigger.refresh()
     }, sectionRef)
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} className="py-24 bg-white">
-      <div className="container-narrow">
-        <div className="text-center mb-14">
+    <section ref={sectionRef} className="py-24 md:py-32 bg-surface-container-low">
+      <div className="container-wide">
+        <div className="max-w-2xl mb-14 md:mb-20">
           <SectionLabel>Testimonios</SectionLabel>
-          <h2
-            className="font-cinzel text-navy font-semibold"
-            style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' }}
-          >
-            Lo que Dicen Nuestros Clientes
+          <h2 className="font-headline text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight">
+            Historias que nos
+            <br />
+            <span className="text-secondary">enorgullecen</span>
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {testimonials.map(({ quote, name, role }) => (
             <div
               key={name}
-              className="testimonial-card p-8 bg-surface border border-surface-2"
+              className="testimonial-card relative bg-white rounded-xl p-8 md:p-10 shadow-editorial hover:shadow-editorial-lg transition-shadow duration-300"
             >
-              <div className="flex gap-1 mb-5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={14} className="text-gold fill-gold" />
-                ))}
-              </div>
-              <p className="font-josefin text-sm leading-relaxed text-text-muted mb-7 italic">
+              <Quote
+                size={28}
+                className="text-secondary-fixed absolute top-8 right-8 -scale-x-100"
+                strokeWidth={1.5}
+              />
+
+              <p className="font-headline text-primary text-lg leading-relaxed mb-8 font-medium tracking-tight">
                 &ldquo;{quote}&rdquo;
               </p>
-              <div>
-                <p className="font-cinzel text-navy font-semibold text-sm">{name}</p>
-                <p className="font-josefin text-xs text-text-muted tracking-wide mt-1">{role}</p>
+
+              <div className="pt-6 border-t border-outline-variant/40">
+                <p className="font-headline text-primary font-bold text-sm tracking-tight">
+                  {name}
+                </p>
+                <p className="font-body text-xs text-on-surface-variant tracking-wide mt-1">
+                  {role}
+                </p>
               </div>
             </div>
           ))}

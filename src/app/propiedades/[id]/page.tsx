@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { fetchProperty } from '@/lib/api'
 import PropertyGallery from '@/components/property-detail/PropertyGallery'
 import PropertySpecs from '@/components/property-detail/PropertySpecs'
@@ -8,7 +9,7 @@ import WhatsAppCta from '@/components/property-detail/WhatsAppCta'
 import Badge from '@/components/ui/Badge'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { formatPrice, propertyTypeLabel } from '@/lib/utils'
-import { MapPin } from 'lucide-react'
+import { MapPin, ChevronRight } from 'lucide-react'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -48,79 +49,132 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     ...(property.image_urls ?? []),
   ]
   const price = formatPrice(property.price_usd, property.price_ars, property.currency)
-  const location = [property.address, property.neighborhood, property.city]
+  const location = [property.neighborhood, property.city].filter(Boolean).join(', ')
+  const fullAddress = [property.address, property.neighborhood, property.city]
     .filter(Boolean)
     .join(', ')
 
   return (
-    <article className="pt-20">
-      <section aria-label="Galería de imágenes">
+    <article className="pt-20 bg-background">
+      {/* Breadcrumb */}
+      <div className="container-wide pt-6 pb-4">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-2 font-body text-xs text-on-surface-variant"
+        >
+          <Link href="/" className="hover:text-primary transition-colors">
+            Inicio
+          </Link>
+          <ChevronRight size={12} />
+          <Link href="/propiedades" className="hover:text-primary transition-colors">
+            Propiedades
+          </Link>
+          <ChevronRight size={12} />
+          <span className="text-primary font-medium truncate max-w-xs">{property.title}</span>
+        </nav>
+      </div>
+
+      {/* Header */}
+      <header className="container-wide pt-4 pb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-3 mb-5">
+              <Badge type={property.operation_type} />
+              <span className="font-body text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">
+                {propertyTypeLabel(property.property_type)}
+              </span>
+              <span className="font-body text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">
+                Ref. {property.ref_code}
+              </span>
+            </div>
+
+            <h1 className="font-headline text-primary font-bold text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight mb-4">
+              {property.title}
+            </h1>
+
+            {location && (
+              <div className="flex items-center gap-2">
+                <MapPin size={14} className="text-secondary shrink-0" />
+                <span className="font-body text-sm text-on-surface-variant">{fullAddress || location}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="lg:text-right">
+            <p className="font-body text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-2">
+              Precio
+            </p>
+            <p className="font-headline text-primary font-bold text-3xl md:text-4xl tracking-tight leading-none">
+              {price}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {/* Gallery */}
+      <section aria-label="Galería de imágenes" className="container-wide">
         <PropertyGallery images={images} title={property.title} />
       </section>
 
-      <div className="container-narrow py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
-          <div className="space-y-10">
-            <div>
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <Badge type={property.operation_type} />
-                <span className="font-josefin text-xs text-text-muted uppercase tracking-widest">
-                  {propertyTypeLabel(property.property_type)}
-                </span>
-              </div>
+      {/* Main content */}
+      <div className="container-wide py-16 md:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-16 items-start">
+          <div className="space-y-16 min-w-0">
+            {/* Specs */}
+            <section>
+              <SectionLabel>Especificaciones</SectionLabel>
+              <h2 className="font-headline text-primary font-bold text-2xl md:text-3xl mb-8 tracking-tight">
+                De un vistazo
+              </h2>
+              <PropertySpecs property={property} />
+            </section>
 
-              <h1
-                className="font-cinzel text-navy font-semibold leading-tight mb-4"
-                style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' }}
-              >
-                {property.title}
-              </h1>
-
-              {location && (
-                <div className="flex items-center gap-1.5">
-                  <MapPin size={14} className="text-gold shrink-0" />
-                  <span className="font-josefin text-sm text-text-muted">{location}</span>
-                </div>
-              )}
-
-              <p className="mt-3 font-cinzel text-2xl text-navy font-semibold">{price}</p>
-            </div>
-
-            <PropertySpecs property={property} />
-
+            {/* Description */}
             {property.description && (
-              <div>
-                <SectionLabel>La Propiedad</SectionLabel>
-                <h2 className="font-cinzel text-navy font-semibold text-xl mb-4">Descripción</h2>
-                <div
-                  className="font-josefin text-text-muted text-sm leading-relaxed space-y-3"
-                  style={{ borderLeft: '3px solid #C4A35A', paddingLeft: '1.5rem' }}
-                >
-                  {property.description.split('\n').filter(Boolean).map((para, i) => (
-                    <p key={i}>{para}</p>
-                  ))}
+              <section>
+                <SectionLabel>La propiedad</SectionLabel>
+                <h2 className="font-headline text-primary font-bold text-2xl md:text-3xl mb-8 tracking-tight">
+                  Descripción
+                </h2>
+                <div className="bg-white rounded-xl shadow-editorial p-8 md:p-10">
+                  <div className="font-body text-on-surface-variant text-base leading-relaxed space-y-4 max-w-3xl">
+                    {property.description
+                      .split('\n')
+                      .filter(Boolean)
+                      .map((para, i) => (
+                        <p key={i}>{para}</p>
+                      ))}
+                  </div>
                 </div>
-              </div>
+              </section>
             )}
 
-            <PropertyAmenities
-              amenities={property.amenities ?? []}
-              hasPool={property.has_pool}
-              hasGarden={property.has_garden}
-              hasElevator={property.has_elevator ?? false}
-            />
+            {/* Amenities */}
+            <section>
+              <PropertyAmenities
+                amenities={property.amenities ?? []}
+                hasPool={property.has_pool}
+                hasGarden={property.has_garden}
+                hasElevator={property.has_elevator ?? false}
+              />
+            </section>
 
+            {/* Tour */}
             {property.tour_360_url && (
-              <div>
-                <SectionLabel>Tour Virtual</SectionLabel>
-                <h2 className="font-cinzel text-navy font-semibold text-xl mb-4">Recorrido 360°</h2>
-                <iframe
-                  src={property.tour_360_url}
-                  className="w-full aspect-video"
-                  allowFullScreen
-                  title="Tour virtual 360°"
-                />
-              </div>
+              <section>
+                <SectionLabel>Tour virtual</SectionLabel>
+                <h2 className="font-headline text-primary font-bold text-2xl md:text-3xl mb-8 tracking-tight">
+                  Recorrido 360°
+                </h2>
+                <div className="rounded-xl overflow-hidden shadow-editorial-lg">
+                  <iframe
+                    src={property.tour_360_url}
+                    className="w-full aspect-video"
+                    allowFullScreen
+                    title="Tour virtual 360°"
+                  />
+                </div>
+              </section>
             )}
           </div>
 

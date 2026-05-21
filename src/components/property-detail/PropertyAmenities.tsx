@@ -30,16 +30,16 @@ const amenityIcons: Record<string, LucideIcon> = {
 const amenityLabels: Record<string, string> = {
   piscina: 'Piscina',
   jardin: 'Jardín',
-  gas_natural: 'Gas Natural',
+  gas_natural: 'Gas natural',
   wifi: 'WiFi',
-  aire_acondicionado: 'Aire Acondicionado',
-  television: 'TV Cable',
+  aire_acondicionado: 'Aire acondicionado',
+  television: 'TV cable',
   cochera: 'Cochera',
   seguridad: 'Seguridad 24h',
   gimnasio: 'Gimnasio',
-  solarium: 'Solarium',
+  solarium: 'Solárium',
   parrilla: 'Parrilla',
-  cocina_equipada: 'Cocina Equipada',
+  cocina_equipada: 'Cocina equipada',
 }
 
 export default function PropertyAmenities({
@@ -49,35 +49,43 @@ export default function PropertyAmenities({
   hasElevator,
 }: PropertyAmenitiesProps) {
   const allAmenities = [
-    ...amenities,
-    ...(hasPool ? ['piscina'] : []),
-    ...(hasGarden ? ['jardin'] : []),
+    ...new Set([
+      ...amenities,
+      ...(hasPool ? ['piscina'] : []),
+      ...(hasGarden ? ['jardin'] : []),
+    ]),
   ]
 
   if (allAmenities.length === 0 && !hasElevator) return null
 
   return (
     <div>
-      <SectionLabel>Características</SectionLabel>
-      <h3 className="font-cinzel text-navy font-semibold text-xl mb-6">Comodidades</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <SectionLabel>Comodidades</SectionLabel>
+      <h3 className="font-headline text-primary font-bold text-2xl md:text-3xl mb-8 tracking-tight">
+        Características distintivas
+      </h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
         {allAmenities.map((amenity) => {
           const Icon = amenityIcons[amenity] ?? ShieldCheck
           const label = amenityLabels[amenity] ?? amenity
           return (
             <div
               key={amenity}
-              className="flex items-center gap-3 p-3 bg-surface border border-surface-2"
+              className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-editorial hover:shadow-editorial-lg transition-shadow"
             >
-              <Icon size={16} className="text-gold shrink-0" />
-              <span className="font-josefin text-sm text-text">{label}</span>
+              <div className="w-9 h-9 shrink-0 rounded-full bg-secondary-fixed flex items-center justify-center">
+                <Icon size={15} className="text-primary" />
+              </div>
+              <span className="font-body text-sm font-medium text-primary">{label}</span>
             </div>
           )
         })}
         {hasElevator && (
-          <div className="flex items-center gap-3 p-3 bg-surface border border-surface-2">
-            <Building2 size={16} className="text-gold shrink-0" />
-            <span className="font-josefin text-sm text-text">Ascensor</span>
+          <div className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-editorial hover:shadow-editorial-lg transition-shadow">
+            <div className="w-9 h-9 shrink-0 rounded-full bg-secondary-fixed flex items-center justify-center">
+              <Building2 size={15} className="text-primary" />
+            </div>
+            <span className="font-body text-sm font-medium text-primary">Ascensor</span>
           </div>
         )}
       </div>

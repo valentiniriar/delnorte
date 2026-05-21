@@ -30,9 +30,9 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
 
   return (
     <>
-      <div className="grid grid-cols-4 grid-rows-2 gap-1 h-[60vh] min-h-64">
+      <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-[2fr_1fr] md:grid-rows-2 gap-1 h-[50vh] sm:h-[55vh] md:h-[60vh] min-h-[320px]">
         <div
-          className="col-span-2 row-span-2 relative overflow-hidden cursor-pointer group"
+          className="col-span-2 row-span-1 md:row-span-2 relative overflow-hidden cursor-pointer group"
           onClick={() => setLightboxIndex(0)}
         >
           <Image
@@ -94,7 +94,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           </button>
 
           <div
-            className="relative w-full max-w-4xl h-[80vh] px-16"
+            className="relative w-full max-w-4xl h-[70vh] sm:h-[80vh] px-4 sm:px-16"
             onClick={(e) => e.stopPropagation()}
           >
             <Image

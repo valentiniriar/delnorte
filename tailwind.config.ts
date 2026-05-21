@@ -5,38 +5,59 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: '#041627',
+          800: '#1a2b3c',
+          900: '#020e1a',
+        },
+        secondary: {
+          DEFAULT: '#775a19',
+          hover: '#5d4201',
+          dim: '#e9c176',
+          fixed: '#ffdea5',
+        },
         navy: {
           DEFAULT: '#041627',
           800: '#062d4a',
           900: '#020e1a',
         },
         gold: {
-          DEFAULT: '#C4A35A',
-          dark: '#9c7c32',
+          DEFAULT: '#775a19',
+          dark: '#5d4201',
         },
         surface: {
-          DEFAULT: '#F8F9FA',
-          2: '#EEF0F2',
+          DEFAULT: '#ffffff',
+          2: '#edeeef',
+          container: '#edeeef',
+          'container-low': '#f3f4f5',
+          'container-high': '#e7e8e9',
+          variant: '#e1e3e4',
         },
-        'text-muted': '#6B7280',
+        background: '#f8f9fa',
+        'on-surface': '#191c1d',
+        'on-surface-variant': '#44474c',
+        outline: {
+          DEFAULT: '#74777d',
+          variant: '#c4c6cd',
+        },
+        'text-muted': '#44474c',
       },
       fontFamily: {
-        cinzel: ['var(--font-cinzel)', 'serif'],
-        josefin: ['var(--font-josefin)', 'sans-serif'],
+        headline: ['var(--font-headline)', 'Manrope', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', 'Inter', 'system-ui', 'sans-serif'],
+        cinzel: ['var(--font-headline)', 'Manrope', 'system-ui', 'sans-serif'],
+        josefin: ['var(--font-body)', 'Inter', 'system-ui', 'sans-serif'],
       },
-      animation: {
-        'fade-up': 'fadeUp 0.6s ease-out forwards',
-        'fade-in': 'fadeIn 0.4s ease-out forwards',
+      borderRadius: {
+        sm: '0.25rem',
+        md: '0.5rem',
+        lg: '0.75rem',
+        xl: '1rem',
       },
-      keyframes: {
-        fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(24px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
+      boxShadow: {
+        editorial: '0 20px 40px rgba(25,28,29,0.06)',
+        'editorial-lg': '0 24px 60px -10px rgba(25,28,29,0.12)',
+        navbar: '0 20px 40px rgba(25,28,29,0.04)',
       },
     },
   },

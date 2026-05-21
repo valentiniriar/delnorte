@@ -2,110 +2,163 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, Phone } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { Menu, X, MessageCircle } from 'lucide-react'
 import { buildWhatsAppUrl } from '@/lib/utils'
-import type { Agency } from '@/types'
+import { useAgency } from '@/hooks/useAgency'
 
-interface NavbarProps {
-  agency: Agency | null
-}
+const DEFAULT_WHATSAPP = '5493883321018'
 
-export default function Navbar({ agency }: NavbarProps) {
+const NAV_LINKS = [
+  { href: '/propiedades', label: 'Propiedades' },
+]
+
+export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+  const { data: agencyData } = useAgency()
+  const agency = agencyData?.data ?? null
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 40)
+    const handleScroll = () => setIsScrolled(window.scrollY > 20)
+    handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const whatsappUrl = agency?.settings?.website_whatsapp
-    ? buildWhatsAppUrl(
-        agency.settings.website_whatsapp,
-        'Hola, me gustaría recibir más información sobre sus propiedades.',
-      )
-    : 'https://wa.me/5493881234567'
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
+  const whatsappRaw = agency?.settings?.website_whatsapp ?? DEFAULT_WHATSAPP
+
+  const publishUrl = buildWhatsAppUrl(
+    whatsappRaw,
+    'Hola! Me gustaría publicar una propiedad con Del Norte Estudio Inmobiliario.',
+  )
 
   return (
     <header
       className={[
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'bg-navy shadow-lg py-3'
-          : 'bg-transparent py-5',
+        'fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow] duration-300',
+        'h-20 glass-nav',
+        isScrolled ? 'shadow-navbar' : '',
       ].join(' ')}
     >
-      <div className="container-narrow flex items-center justify-between">
-        <Link href="/" className="flex flex-col leading-none group">
-          <span className="font-cinzel text-gold text-xl font-semibold tracking-widest uppercase">
-            Del Norte
+      <div className="container-wide h-full flex items-center justify-between gap-6">
+
+        {/* ── Logo (left) ── */}
+        <Link
+          href="/"
+          className="shrink-0 group flex flex-col leading-none"
+          aria-label="Del Norte Estudio Inmobiliario — Inicio"
+        >
+          <span className="font-headline text-xl font-bold tracking-tight text-primary group-hover:opacity-80 transition-opacity">
+            Del<span className="text-secondary">Norte</span>
           </span>
-          <span className="font-josefin text-white/60 text-xs tracking-[0.3em] uppercase">
-            Inmobiliaria
+          <span className="font-body text-[9px] font-semibold tracking-[0.22em] uppercase text-on-surface-variant group-hover:opacity-80 transition-opacity mt-0.5">
+            Estudio Inmobiliario
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {[
-            { href: '/', label: 'Inicio' },
-            { href: '/propiedades', label: 'Propiedades' },
-            { href: '/contacto', label: 'Contacto' },
-          ].map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="font-josefin text-sm font-medium tracking-wider text-white/80 hover:text-gold transition-colors duration-200 uppercase"
-            >
-              {label}
-            </Link>
-          ))}
+        {/* ── Center nav (desktop) ── */}
+        <nav
+          className="hidden md:flex items-center gap-8"
+          aria-label="Navegación principal"
+        >
+          {NAV_LINKS.map(({ href, label }) => {
+            const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={isActive ? 'page' : undefined}
+                className={[
+                  'font-body text-sm font-medium tracking-wide transition-all duration-200',
+                  isActive
+                    ? 'text-secondary border-b-2 border-secondary pb-1'
+                    : 'text-on-surface-variant hover:text-primary',
+                ].join(' ')}
+              >
+                {label}
+              </Link>
+            )
+          })}
+
+          <a
+            href={publishUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-body text-sm font-medium text-on-surface-variant hover:text-primary transition-colors tracking-wide"
+          >
+            Publicá tu propiedad
+          </a>
         </nav>
 
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-2 bg-gold hover:bg-gold-dark text-navy font-josefin text-sm font-semibold px-5 py-2.5 transition-colors duration-200"
-        >
-          <Phone size={14} />
-          Contactar
-        </a>
+        {/* ── Right: contact button (desktop) ── */}
+        <div className="hidden md:flex items-center gap-3 shrink-0">
+          <Link
+            href="/contacto"
+            className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-md font-body text-sm font-semibold hover:bg-primary-800 active:scale-[0.98] transition-all"
+          >
+            <MessageCircle size={15} />
+            Contactar
+          </Link>
+        </div>
 
+        {/* ── Hamburger (mobile) ── */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-white p-2 cursor-pointer"
+          className="md:hidden text-primary p-2 -mr-2 cursor-pointer"
           aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={isOpen}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
+      {/* ── Mobile drawer ── */}
       {isOpen && (
-        <div className="md:hidden bg-navy-900 border-t border-white/10">
-          <nav className="container-narrow py-6 flex flex-col gap-4">
-            {[
-              { href: '/', label: 'Inicio' },
-              { href: '/propiedades', label: 'Propiedades' },
-              { href: '/contacto', label: 'Contacto' },
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setIsOpen(false)}
-                className="font-josefin text-white/80 text-base uppercase tracking-widest hover:text-gold transition-colors"
-              >
-                {label}
-              </Link>
-            ))}
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-outline-variant/30 shadow-editorial">
+          <nav className="container-wide py-4 flex flex-col" aria-label="Navegación móvil">
+            {[{ href: '/', label: 'Inicio' }, ...NAV_LINKS].map(({ href, label }) => {
+              const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setIsOpen(false)}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={[
+                    'font-body text-base py-4 border-b border-outline-variant/20 transition-colors',
+                    isActive ? 'text-secondary font-semibold' : 'text-on-surface-variant hover:text-primary',
+                  ].join(' ')}
+                >
+                  {label}
+                </Link>
+              )
+            })}
+
             <a
-              href={whatsappUrl}
+              href={publishUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 bg-gold text-navy font-josefin font-semibold text-sm px-5 py-3 text-center tracking-wider"
+              className="font-body text-base py-4 border-b border-outline-variant/20 text-on-surface-variant hover:text-primary transition-colors"
             >
-              WhatsApp
+              Publicá tu propiedad
             </a>
+
+            <div className="pt-4">
+              <Link
+                href="/contacto"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-2 bg-primary text-white rounded-md py-3.5 font-body text-sm font-semibold hover:bg-primary-800 transition-colors"
+              >
+                <MessageCircle size={15} />
+                Contactar
+              </Link>
+            </div>
           </nav>
         </div>
       )}

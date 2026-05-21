@@ -8,13 +8,13 @@ export default function SectionLabel({
   className?: string
 }) {
   return (
-    <p
+    <span
       className={cn(
-        'font-josefin text-xs font-semibold tracking-[0.3em] uppercase text-gold mb-3',
+        'font-body text-xs font-bold tracking-[0.2em] uppercase text-secondary block mb-4',
         className,
       )}
     >
       {children}
-    </p>
+    </span>
   )
 }

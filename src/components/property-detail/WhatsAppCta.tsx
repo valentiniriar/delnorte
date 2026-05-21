@@ -1,6 +1,6 @@
 'use client'
 
-import { MessageCircle, Phone, Mail } from 'lucide-react'
+import { MessageCircle, Phone, Mail, Calendar } from 'lucide-react'
 import { buildWhatsAppUrl, formatPrice } from '@/lib/utils'
 import { useAgency } from '@/hooks/useAgency'
 import type { PropertyDetail } from '@/types'
@@ -16,41 +16,52 @@ export default function WhatsAppCta({ property }: WhatsAppCtaProps) {
 
   const message = `Hola, me interesa la propiedad: "${property.title}" (${property.ref_code}). ¿Podría darme más información?`
   const whatsappUrl = buildWhatsAppUrl(phone, message)
+  const visitMessage = `Hola, me gustaría agendar una visita para ver: "${property.title}" (${property.ref_code}).`
+  const visitUrl = buildWhatsAppUrl(phone, visitMessage)
 
   const price = formatPrice(property.price_usd, property.price_ars, property.currency)
 
   return (
-    <div
-      className="bg-white p-6 sticky top-24"
-      style={{ boxShadow: '0 8px 40px rgba(4,22,39,0.12)' }}
-    >
-      <p className="font-josefin text-xs text-text-muted uppercase tracking-widest mb-1">
-        Precio
+    <div className="bg-white rounded-xl p-7 shadow-editorial-lg lg:sticky lg:top-28">
+      <p className="font-body text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-bold mb-2">
+        Precio de referencia
       </p>
-      <p className="font-cinzel text-navy font-semibold text-2xl mb-1">{price}</p>
+      <p className="font-headline text-primary font-bold text-3xl leading-none tracking-tight">
+        {price}
+      </p>
       {property.rental_period && (
-        <p className="font-josefin text-xs text-text-muted mb-4">
-          {property.rental_period === 'mensual' ? 'por mes' : 'por día'}
+        <p className="font-body text-xs text-on-surface-variant mt-2">
+          {property.rental_period === 'mensual' ? 'Valor mensual' : 'Valor por día'}
         </p>
       )}
 
-      <div className="w-full h-px bg-surface-2 my-5" />
+      <div className="w-full h-px bg-outline-variant/40 my-6" />
 
       <div className="space-y-3">
         <a
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2.5 w-full bg-[#25D366] hover:bg-[#1fb958] text-white font-josefin font-semibold text-sm py-4 tracking-wider uppercase transition-colors cursor-pointer"
+          className="flex items-center justify-center gap-2.5 w-full bg-primary hover:bg-primary-800 text-white font-body font-bold text-sm py-4 rounded-lg tracking-tight transition-colors"
         >
-          <MessageCircle size={18} />
-          Consultar por WhatsApp
+          <MessageCircle size={17} />
+          Consultar ahora
+        </a>
+
+        <a
+          href={visitUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2.5 w-full bg-secondary-fixed hover:bg-secondary-dim text-primary font-body font-bold text-sm py-4 rounded-lg tracking-tight transition-colors"
+        >
+          <Calendar size={17} />
+          Agendar visita
         </a>
 
         {agency?.phone && (
           <a
             href={`tel:${agency.phone.replace(/\s/g, '')}`}
-            className="flex items-center justify-center gap-2.5 w-full border border-navy text-navy hover:bg-navy hover:text-white font-josefin font-semibold text-sm py-4 tracking-wider uppercase transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-2.5 w-full border border-outline-variant hover:border-primary hover:bg-primary hover:text-white text-primary font-body font-bold text-sm py-4 rounded-lg tracking-tight transition-colors"
           >
             <Phone size={16} />
             Llamar
@@ -58,25 +69,33 @@ export default function WhatsAppCta({ property }: WhatsAppCtaProps) {
         )}
       </div>
 
-      <div className="w-full h-px bg-surface-2 my-5" />
-
-      <p className="font-josefin text-xs text-text-muted text-center">
-        Ref: <span className="font-medium text-text">{property.ref_code}</span>
-      </p>
-
-      {agency && (
-        <div className="mt-4 pt-4 border-t border-surface-2">
-          <p className="font-cinzel text-navy font-semibold text-sm mb-1">{agency.name}</p>
-          {agency.email && (
-            <a href={`mailto:${agency.email}`} className="flex items-center gap-2 mt-2">
-              <Mail size={13} className="text-gold" />
-              <span className="font-josefin text-xs text-text-muted hover:text-navy transition-colors">
-                {agency.email}
-              </span>
-            </a>
-          )}
+      <div className="mt-6 pt-6 border-t border-outline-variant/40 space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="font-body text-xs text-on-surface-variant">Referencia</span>
+          <span className="font-body text-xs font-bold text-primary tracking-wider">
+            {property.ref_code}
+          </span>
         </div>
-      )}
+
+        {agency && (
+          <div className="pt-2">
+            <p className="font-headline text-primary font-bold text-sm tracking-tight mb-2">
+              {agency.name}
+            </p>
+            {agency.email && (
+              <a
+                href={`mailto:${agency.email}`}
+                className="flex items-center gap-2 group"
+              >
+                <Mail size={13} className="text-secondary" />
+                <span className="font-body text-xs text-on-surface-variant group-hover:text-primary transition-colors break-all">
+                  {agency.email}
+                </span>
+              </a>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

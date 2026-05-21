@@ -21,12 +21,12 @@ export default function PropertySpecs({ property }: PropertySpecsProps) {
     property.total_sqm != null && {
       icon: Maximize2,
       value: `${property.total_sqm} m²`,
-      label: 'Superficie Total',
+      label: 'Superficie total',
     },
     property.covered_sqm != null && {
       icon: Building2,
       value: `${property.covered_sqm} m²`,
-      label: 'Sup. Cubierta',
+      label: 'Sup. cubierta',
     },
     property.garages != null && property.garages > 0 && {
       icon: CarFront,
@@ -36,7 +36,7 @@ export default function PropertySpecs({ property }: PropertySpecsProps) {
     property.year_built != null && {
       icon: Calendar,
       value: property.year_built,
-      label: 'Año de Construcción',
+      label: 'Construcción',
     },
   ].filter(Boolean) as Array<{
     icon: LucideIcon
@@ -47,20 +47,23 @@ export default function PropertySpecs({ property }: PropertySpecsProps) {
   if (specs.length === 0) return null
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-0 border border-surface-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-white rounded-xl shadow-editorial overflow-hidden">
       {specs.map(({ icon: Icon, value, label }, i) => (
         <div
           key={label}
           className={[
-            'flex flex-col items-center justify-center py-5 px-3 text-center',
-            i < specs.length - 1 ? 'border-r border-surface-2' : '',
+            'flex flex-col items-center justify-center py-6 px-3 text-center',
+            i < specs.length - 1 ? 'border-b sm:border-b-0 sm:border-r border-outline-variant/30' : '',
+            i < specs.length - 2 && i % 2 === 0 ? 'border-b sm:border-b-0' : '',
           ].join(' ')}
         >
-          <Icon size={20} className="text-gold mb-2" />
-          <span className="font-cinzel text-navy font-semibold text-lg leading-none mb-1">
+          <div className="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center mb-3">
+            <Icon size={16} className="text-primary" />
+          </div>
+          <span className="font-headline text-primary font-bold text-xl leading-none mb-1.5 tracking-tight">
             {value}
           </span>
-          <span className="font-josefin text-xs text-text-muted tracking-wide">{label}</span>
+          <span className="font-body text-xs text-on-surface-variant tracking-wide">{label}</span>
         </div>
       ))}
     </div>

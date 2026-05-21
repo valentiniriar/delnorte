@@ -1,154 +1,133 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import Link from 'next/link'
 import { gsap } from 'gsap'
-import { Search, MapPin } from 'lucide-react'
-import type { Agency } from '@/types'
+import { Search } from 'lucide-react'
+import { prefersReducedMotion } from '@/lib/motion'
+import SearchSelect from '@/components/ui/SearchSelect'
 
-interface HeroSectionProps {
-  agency: Agency | null
-}
+const operationOptions = [
+  { value: '', label: 'Todas las operaciones' },
+  { value: 'venta', label: 'Venta' },
+  { value: 'alquiler', label: 'Alquiler' },
+  { value: 'alquiler_temporal', label: 'Alquiler temporal' },
+]
 
-export default function HeroSection({ agency }: HeroSectionProps) {
+const propertyTypeOptions = [
+  { value: '', label: 'Todos los tipos' },
+  { value: 'casa', label: 'Casa' },
+  { value: 'departamento', label: 'Departamento' },
+  { value: 'lote', label: 'Lote' },
+  { value: 'local_comercial', label: 'Local comercial' },
+]
+
+export default function HeroSection() {
   const headlineRef = useRef<HTMLHeadingElement>(null)
   const subRef = useRef<HTMLParagraphElement>(null)
   const searchRef = useRef<HTMLDivElement>(null)
-  const overlayRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (prefersReducedMotion()) return
     const ctx = gsap.context(() => {
-      gsap.set([headlineRef.current, subRef.current, searchRef.current], {
-        opacity: 0,
-        y: 40,
-      })
-      gsap.set(overlayRef.current, { opacity: 0 })
-
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      tl.to(overlayRef.current, { opacity: 1, duration: 1.2 })
-        .to(headlineRef.current, { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
-        .to(subRef.current, { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
-        .to(searchRef.current, { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+      gsap.fromTo(
+        [headlineRef.current, subRef.current, searchRef.current],
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.15,
+          ease: 'power3.out',
+          delay: 0.1,
+        },
+      )
     })
     return () => ctx.revert()
   }, [])
 
-  const headline = agency?.settings?.website_headline ?? 'Tu Hogar en el Norte'
-  const subheadline =
-    agency?.settings?.website_subheadline ??
-    'Propiedades únicas en la Quebrada de Humahuaca y el Valle de Jujuy'
-
   return (
-    <section className="relative min-h-dvh flex items-center overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80')",
-        }}
-      />
+    <section className="relative h-screen min-h-[720px] flex items-center justify-center overflow-hidden bg-primary">
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center scale-105"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=85')",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(115deg, rgba(4,22,39,0.78) 0%, rgba(4,22,39,0.38) 55%, rgba(4,22,39,0.18) 100%)',
+          }}
+        />
+      </div>
 
-      <div
-        ref={overlayRef}
-        className="absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(105deg, rgba(4,22,39,0.92) 0%, rgba(4,22,39,0.75) 50%, rgba(4,22,39,0.45) 100%)',
-        }}
-      />
+      <div className="relative z-10 w-full max-w-6xl px-6 md:px-8 pt-24 md:pt-0">
+        <h1
+          ref={headlineRef}
+          className="font-headline text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-white mb-6 leading-[1.05] tracking-tight max-w-4xl"
+        >
+          Tu próximo hogar,
+          <br />
+          <span className="text-secondary-fixed">en el norte argentino.</span>
+        </h1>
 
-      <div className="container-narrow relative z-10 pt-32 pb-20">
-        <div className="max-w-2xl">
-          <p className="font-josefin text-gold text-xs font-medium tracking-[0.4em] uppercase mb-6">
-            <MapPin size={12} className="inline mr-2" />
-            San Salvador de Jujuy, Argentina
-          </p>
+        <p
+          ref={subRef}
+          className="font-body text-white/85 text-base md:text-xl max-w-2xl mb-10 md:mb-12 font-light tracking-wide leading-relaxed"
+        >
+          Seleccionamos las mejores propiedades en Jujuy y la Quebrada de Humahuaca.
+          Venta, alquiler y alquiler temporal con atención personalizada.
+        </p>
 
-          <h1
-            ref={headlineRef}
-            className="font-cinzel text-white font-semibold leading-tight mb-6"
-            style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+        <div ref={searchRef}>
+          <form
+            action="/propiedades"
+            method="GET"
+            className="bg-white p-2 md:p-3 rounded-xl shadow-editorial-lg flex flex-col md:flex-row items-stretch md:items-center gap-2 max-w-4xl"
           >
-            {headline}
-          </h1>
-
-          <p
-            ref={subRef}
-            className="font-josefin text-white/70 text-lg leading-relaxed mb-10 max-w-lg"
-          >
-            {subheadline}
-          </p>
-
-          <div ref={searchRef}>
-            <form
-              action="/propiedades"
-              method="GET"
-              className="flex flex-col sm:flex-row gap-0 bg-white shadow-2xl"
-            >
-              <div className="flex items-center gap-3 flex-1 px-5 py-4 border-b sm:border-b-0 sm:border-r border-surface-2">
-                <Search size={18} className="text-text-muted shrink-0" />
+            <div className="w-full md:flex-1 grid grid-cols-1 md:grid-cols-3 gap-0">
+              <label className="flex flex-col px-4 py-3 md:py-2 border-b md:border-b-0 md:border-r border-outline-variant/30">
+                <span className="font-body text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold mb-1">
+                  Ubicación
+                </span>
                 <input
                   type="text"
                   name="search"
-                  placeholder="Barrio, ciudad o dirección..."
-                  className="font-josefin text-sm w-full outline-none text-text placeholder:text-text-muted bg-transparent"
-                  aria-label="Buscar propiedades"
+                  placeholder="¿Dónde?"
+                  className="bg-transparent border-none p-0 focus:outline-none text-on-surface font-body font-medium text-sm placeholder:text-outline-variant"
                 />
-              </div>
-              <select
+              </label>
+
+              <SearchSelect
                 name="operation_type"
-                className="font-josefin text-sm px-5 py-4 bg-white text-text border-b sm:border-b-0 sm:border-r border-surface-2 outline-none cursor-pointer"
-                aria-label="Tipo de operación"
-              >
-                <option value="">Operación</option>
-                <option value="venta">Venta</option>
-                <option value="alquiler">Alquiler</option>
-                <option value="alquiler_temporal">Temporal</option>
-              </select>
-              <select
+                label="Operación"
+                options={operationOptions}
+                className="px-4 py-3 md:py-2 border-b md:border-b-0 md:border-r border-outline-variant/30"
+              />
+
+              <SearchSelect
                 name="property_type"
-                className="font-josefin text-sm px-5 py-4 bg-white text-text border-b sm:border-b-0 sm:border-r border-surface-2 outline-none cursor-pointer"
-                aria-label="Tipo de propiedad"
-              >
-                <option value="">Tipo</option>
-                <option value="casa">Casa</option>
-                <option value="departamento">Departamento</option>
-                <option value="lote">Lote</option>
-                <option value="local_comercial">Local</option>
-              </select>
-              <button
-                type="submit"
-                className="bg-navy hover:bg-navy-800 text-white font-josefin text-sm font-semibold px-8 py-4 tracking-widest uppercase transition-colors cursor-pointer"
-              >
-                Buscar
-              </button>
-            </form>
-            <p className="font-josefin text-white/40 text-xs mt-3">
-              Más de 50 propiedades disponibles en Jujuy
-            </p>
-          </div>
+                label="Tipo"
+                options={propertyTypeOptions}
+                className="px-4 py-3 md:py-2"
+              />
+            </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {[
-              { label: 'Venta en Jujuy', href: '/propiedades?operation_type=venta' },
-              { label: 'Alquiler', href: '/propiedades?operation_type=alquiler' },
-              { label: 'Quebrada', href: '/propiedades?search=quebrada' },
-            ].map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className="font-josefin text-xs text-white/60 hover:text-gold border border-white/20 hover:border-gold px-4 py-2 transition-all duration-200 tracking-wider"
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
+            <button
+              type="submit"
+              className="w-full md:w-auto bg-primary hover:bg-primary-800 text-white px-8 py-4 rounded-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-all font-body cursor-pointer"
+            >
+              <Search size={18} />
+              <span className="font-bold text-sm tracking-wide">Explorar</span>
+            </button>
+          </form>
+          <p className="mt-4 font-body text-white/60 text-xs tracking-wider">
+            + de 50 propiedades curadas en Jujuy
+          </p>
         </div>
-      </div>
-
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent" />
-        <span className="font-josefin text-xs text-white/40 tracking-widest uppercase">Scroll</span>
       </div>
     </section>
   )

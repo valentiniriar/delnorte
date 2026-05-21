@@ -12,14 +12,14 @@ export function formatPrice(
   priceArs: number | null,
   currency: 'USD' | 'ARS',
 ): string {
-  if (currency === 'USD' && priceUsd != null) {
+  if (currency === 'USD' && priceUsd != null && priceUsd > 0) {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'USD',
       maximumFractionDigits: 0,
     }).format(priceUsd)
   }
-  if (priceArs != null) {
+  if (priceArs != null && priceArs > 0) {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'ARS',

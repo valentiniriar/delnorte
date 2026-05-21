@@ -1,4 +1,3 @@
-// src/lib/api.ts
 import type {
   AgencyResponse,
   PropertiesResponse,
@@ -8,6 +7,14 @@ import type {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? ''
+
+const TIMEOUT_MS = 5000
+
+function fetchWithTimeout(url: string, options: RequestInit & { next?: { revalidate: number } }): Promise<Response> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS)
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timeout))
+}
 
 const headers: HeadersInit = {
   'X-API-Key': API_KEY,
@@ -23,7 +30,7 @@ export async function fetchProperties(
       if (v != null && v !== '') url.searchParams.set(k, String(v))
     })
   }
-  const res = await fetch(url.toString(), {
+  const res = await fetchWithTimeout(url.toString(), {
     headers,
     next: { revalidate: 60 },
   })
@@ -32,7 +39,7 @@ export async function fetchProperties(
 }
 
 export async function fetchProperty(id: string): Promise<PropertyDetailResponse> {
-  const res = await fetch(`${API_BASE}/api/public/v1/properties/${id}`, {
+  const res = await fetchWithTimeout(`${API_BASE}/api/public/v1/properties/${id}`, {
     headers,
     next: { revalidate: 60 },
   })
@@ -41,7 +48,7 @@ export async function fetchProperty(id: string): Promise<PropertyDetailResponse>
 }
 
 export async function fetchAgency(): Promise<AgencyResponse> {
-  const res = await fetch(`${API_BASE}/api/public/v1/agency`, {
+  const res = await fetchWithTimeout(`${API_BASE}/api/public/v1/agency`, {
     headers,
     next: { revalidate: 3600 },
   })
