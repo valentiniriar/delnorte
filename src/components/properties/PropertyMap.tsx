@@ -59,6 +59,7 @@ export default function PropertyMap({
   onMobileSelect,
 }: PropertyMapProps) {
   const mapRef = useRef<MapRef>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [popupInfo, setPopupInfo] = useState<Property | null>(null)
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth < 1024 : false,
@@ -70,6 +71,17 @@ export default function PropertyMap({
     const check = () => setIsMobile(window.innerWidth < 1024)
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
+  }, [])
+
+  // Resize map when container becomes visible (e.g. switching from list to map on mobile)
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver(() => {
+      mapRef.current?.resize()
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
 
   const emitBounds = useCallback(() => {
@@ -129,7 +141,7 @@ export default function PropertyMap({
   )
 
   return (
-    <div className="relative w-full h-full">
+    <div ref={containerRef} className="relative w-full h-full">
       <Map
         ref={mapRef}
         initialViewState={JUJUY_VIEWPORT}

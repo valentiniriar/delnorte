@@ -5,6 +5,10 @@ import {
 } from 'lucide-react'
 import SectionLabel from '@/components/ui/SectionLabel'
 
+function formatAmenityLabel(key: string): string {
+  return key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
 interface PropertyAmenitiesProps {
   amenities: string[]
   hasPool: boolean
@@ -67,7 +71,7 @@ export default function PropertyAmenities({
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
         {allAmenities.map((amenity) => {
           const Icon = amenityIcons[amenity] ?? ShieldCheck
-          const label = amenityLabels[amenity] ?? amenity
+          const label = amenityLabels[amenity] ?? formatAmenityLabel(amenity)
           return (
             <div
               key={amenity}
