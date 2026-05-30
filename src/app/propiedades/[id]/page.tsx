@@ -6,6 +6,7 @@ import PropertyGallery from '@/components/property-detail/PropertyGallery'
 import PropertySpecs from '@/components/property-detail/PropertySpecs'
 import PropertyAmenities from '@/components/property-detail/PropertyAmenities'
 import WhatsAppCta from '@/components/property-detail/WhatsAppCta'
+import TrackView from '@/components/analytics/TrackView'
 import Badge from '@/components/ui/Badge'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { formatPrice, propertyTypeLabel } from '@/lib/utils'
@@ -56,6 +57,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
   return (
     <article className="pt-20 bg-background">
+      <TrackView propertyId={property.id} />
       {/* Breadcrumb */}
       <div className="container-wide pt-6 pb-4">
         <nav

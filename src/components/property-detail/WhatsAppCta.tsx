@@ -1,8 +1,11 @@
 'use client'
 
-import { MessageCircle, Phone, Mail, Calendar } from 'lucide-react'
+import { useState } from 'react'
+import { MessageCircle, Phone, Mail, Calendar, Send } from 'lucide-react'
 import { buildWhatsAppUrl, formatPrice } from '@/lib/utils'
 import { useAgency } from '@/hooks/useAgency'
+import { trackEvent } from '@/lib/track'
+import PropertyContactForm from './PropertyContactForm'
 import type { PropertyDetail } from '@/types'
 
 interface WhatsAppCtaProps {
@@ -14,10 +17,10 @@ export default function WhatsAppCta({ property }: WhatsAppCtaProps) {
   const agency = data?.data
   const phone = agency?.settings?.website_whatsapp ?? '5493881234567'
 
+  const [formIntent, setFormIntent] = useState<'inquiry' | 'visit' | null>(null)
+
   const message = `Hola, me interesa la propiedad: "${property.title}" (${property.ref_code}). ¿Podría darme más información?`
   const whatsappUrl = buildWhatsAppUrl(phone, message)
-  const visitMessage = `Hola, me gustaría agendar una visita para ver: "${property.title}" (${property.ref_code}).`
-  const visitUrl = buildWhatsAppUrl(phone, visitMessage)
 
   const price = formatPrice(property.price_usd, property.price_ars, property.currency)
 
@@ -38,36 +41,75 @@ export default function WhatsAppCta({ property }: WhatsAppCtaProps) {
       <div className="w-full h-px bg-outline-variant/40 my-6" />
 
       <div className="space-y-3">
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Acción principal: deja un lead en el sistema (no va a WhatsApp) */}
+        <button
+          onClick={() => setFormIntent('inquiry')}
           className="flex items-center justify-center gap-2.5 w-full bg-primary hover:bg-primary-800 text-white font-body font-bold text-sm py-4 rounded-lg tracking-tight transition-colors"
         >
-          <MessageCircle size={17} />
-          Consultar ahora
-        </a>
+          <Send size={16} />
+          Consultar por esta propiedad
+        </button>
 
-        <a
-          href={visitUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Agendar visita: también deja un lead, con intención de visita */}
+        <button
+          onClick={() => setFormIntent('visit')}
           className="flex items-center justify-center gap-2.5 w-full bg-secondary-fixed hover:bg-secondary-dim text-primary font-body font-bold text-sm py-4 rounded-lg tracking-tight transition-colors"
         >
           <Calendar size={17} />
           Agendar visita
-        </a>
+        </button>
 
-        {agency?.phone && (
+        {/* Contacto directo (canales rápidos, distintos del formulario) */}
+        <div className="flex items-center gap-2 pt-1">
+          <div className="flex-1 h-px bg-outline-variant/40" />
+          <span className="font-body text-[10px] text-on-surface-variant uppercase tracking-widest">
+            o contactá directo
+          </span>
+          <div className="flex-1 h-px bg-outline-variant/40" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
           <a
-            href={`tel:${agency.phone.replace(/\s/g, '')}`}
-            className="flex items-center justify-center gap-2.5 w-full border border-outline-variant hover:border-primary hover:bg-primary hover:text-white text-primary font-body font-bold text-sm py-4 rounded-lg tracking-tight transition-colors"
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent(property.id, 'whatsapp_click')}
+            className="flex items-center justify-center gap-2 border border-outline-variant hover:border-primary text-primary font-body font-bold text-sm py-3 rounded-lg tracking-tight transition-colors"
           >
-            <Phone size={16} />
-            Llamar
+            <MessageCircle size={16} />
+            WhatsApp
           </a>
-        )}
+          {agency?.phone ? (
+            <a
+              href={`tel:${agency.phone.replace(/\s/g, '')}`}
+              onClick={() => trackEvent(property.id, 'phone_click')}
+              className="flex items-center justify-center gap-2 border border-outline-variant hover:border-primary text-primary font-body font-bold text-sm py-3 rounded-lg tracking-tight transition-colors"
+            >
+              <Phone size={15} />
+              Llamar
+            </a>
+          ) : (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent(property.id, 'whatsapp_click')}
+              className="flex items-center justify-center gap-2 border border-outline-variant hover:border-primary text-primary font-body font-bold text-sm py-3 rounded-lg tracking-tight transition-colors"
+            >
+              <Phone size={15} />
+              Llamar
+            </a>
+          )}
+        </div>
       </div>
+
+      <PropertyContactForm
+        propertyId={property.id}
+        propertyTitle={property.title}
+        intent={formIntent ?? 'inquiry'}
+        open={formIntent !== null}
+        onClose={() => setFormIntent(null)}
+      />
 
       <div className="mt-6 pt-6 border-t border-outline-variant/40 space-y-4">
         <div className="flex items-center justify-between">
