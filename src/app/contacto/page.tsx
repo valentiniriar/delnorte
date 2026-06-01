@@ -10,6 +10,28 @@ export const metadata: Metadata = {
     'Contactá a Del Norte Estudio Inmobiliario. Estamos en Jujuy, disponibles por WhatsApp, email y teléfono.',
 }
 
+/** Logo oficial de Instagram (ícono cuadrado con gradiente de marca) */
+function InstagramLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <radialGradient id="ig-rg" cx="30%" cy="107%" r="150%">
+          <stop offset="0%" stopColor="#fdf497" />
+          <stop offset="5%" stopColor="#fdf497" />
+          <stop offset="45%" stopColor="#fd5949" />
+          <stop offset="60%" stopColor="#d6249f" />
+          <stop offset="90%" stopColor="#285AEB" />
+        </radialGradient>
+      </defs>
+      <rect width="56" height="56" rx="13" fill="url(#ig-rg)" />
+      <rect x="13" y="13" width="30" height="30" rx="7.5" stroke="white" strokeWidth="2.5" fill="none" />
+      <circle cx="28" cy="28" r="7.5" stroke="white" strokeWidth="2.5" fill="none" />
+      <circle cx="37.5" cy="18.5" r="2" fill="white" />
+    </svg>
+  )
+}
+
+/** Ícono pequeño de Instagram (solo outline, para botones de redes sociales) */
 function IconInstagram({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -18,6 +40,13 @@ function IconInstagram({ size = 16 }: { size?: number }) {
       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
     </svg>
   )
+}
+
+function formatWhatsAppDisplay(raw: string): string {
+  if (/^549\d{10}$/.test(raw)) {
+    return `+54 9 ${raw.slice(3, 6)} ${raw.slice(6, 9)}-${raw.slice(9)}`
+  }
+  return raw
 }
 
 function IconFacebook({ size = 16 }: { size?: number }) {
@@ -33,7 +62,7 @@ export default async function ContactPage() {
   const agency = agencyData?.data
 
   const name = agency?.name ?? 'Del Norte Estudio Inmobiliario'
-  const address = agency?.address ?? 'San Salvador de Jujuy, Jujuy'
+  const address = agency?.address ?? 'Belgrano esq. Otero, San Salvador de Jujuy, Jujuy'
   const email = agency?.email ?? ''
   const phone = agency?.phone ?? '+54 9 388 332-1018'
   const whatsapp = agency?.settings?.website_whatsapp ?? '5493883321018'
@@ -99,9 +128,7 @@ export default async function ContactPage() {
                   rel="noopener noreferrer"
                   className="group flex items-start gap-5 p-6 bg-white rounded-xl shadow-editorial hover:shadow-editorial-lg hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] flex items-center justify-center shrink-0">
-                    <IconInstagram size={22} />
-                  </div>
+                  <InstagramLogo className="w-14 h-14 shrink-0 rounded-xl" />
                   <div className="flex-1 min-w-0">
                     <p className="font-headline text-primary font-bold text-lg mb-1 tracking-tight">Instagram</p>
                     <p className="font-body text-on-surface-variant text-sm mb-1">@delnorte_estudio</p>
@@ -123,7 +150,7 @@ export default async function ContactPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-headline text-primary font-bold text-lg mb-1 tracking-tight">WhatsApp</p>
-                      <p className="font-body text-on-surface-variant text-sm mb-1 break-all">{whatsapp}</p>
+                      <p className="font-body text-on-surface-variant text-sm mb-1">{formatWhatsAppDisplay(whatsapp)}</p>
                       <p className="font-body text-xs text-on-surface-variant">Respuesta inmediata · Lun–Sáb 8:00–20:00</p>
                     </div>
                     <ArrowRight size={18} className="text-secondary shrink-0 mt-2 group-hover:translate-x-1 transition-transform" />
@@ -238,7 +265,7 @@ export default async function ContactPage() {
 
               <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-editorial">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14386.2!2d-65.3023!3d-24.1858!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x941b0edf2de92291%3A0x4e361c48b5a64b7!2sSan%20Salvador%20de%20Jujuy!5e0!3m2!1ses!2sar"
+                  src="https://maps.google.com/maps?q=Belgrano+y+Otero,+San+Salvador+de+Jujuy,+Jujuy,+Argentina&hl=es&z=17&output=embed"
                   width="100%"
                   height="100%"
                   className="w-full h-full border-0"
