@@ -69,7 +69,7 @@ export default function Footer() {
               </svg>
               <div>
                 <p className="font-headline text-white text-2xl font-bold tracking-tight leading-none">
-                  Del<span className="text-secondary-fixed">Norte</span>
+                  DelNorte
                 </p>
                 <p className="font-body text-white/50 text-[10px] tracking-[0.25em] uppercase mt-1">
                   Estudio Inmobiliario · Jujuy
