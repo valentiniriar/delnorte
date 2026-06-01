@@ -186,12 +186,35 @@ function PropertiesContent() {
   const { data: listData, isLoading: isListLoading } = useProperties(listFilters)
   const { data: mapData, isFetching: isMapFetching } = useMapProperties(mapFilters)
 
-  // Detect empty results with active geographic/text filter
-  const hasGeoFilter = !!(baseFilters.search || baseFilters.city)
+  const searchTerm = baseFilters.search
   const isListEmpty = !isListLoading && (listData?.data.length ?? 0) === 0
+  const hasGeoFilter = !!(searchTerm || baseFilters.city)
 
-  // Suggestions query: runs only when the main list returns 0 results with a geo filter
-  // Shows available properties with same operation type (ignoring location)
+  // ── City fallback ────────────────────────────────────────────────────────────
+  // The API's `search` param searches title/description but NOT city/neighborhood.
+  // When `search=Tilcara` returns 0, retry with `city=Tilcara` to catch location matches.
+  const cityFallbackFilters = useMemo(
+    () => ({ ...listFilters, search: undefined, city: searchTerm }),
+    [listFilters, searchTerm],
+  )
+  const { data: cityFallbackData, isFetching: isCityFallbackFetching } = useQuery({
+    queryKey: ['city-fallback', cityFallbackFilters],
+    queryFn: () => fetchProperties(cityFallbackFilters),
+    enabled: isListEmpty && !!searchTerm && !baseFilters.city,
+    staleTime: 30_000,
+  })
+  const cityFallbackResults = cityFallbackData?.data ?? []
+  const isFallbackActive = isListEmpty && cityFallbackResults.length > 0
+
+  // Effective display data: use city fallback if it has results
+  const displayProperties = isFallbackActive ? cityFallbackResults : (listData?.data ?? [])
+  const displayMeta = isFallbackActive ? (cityFallbackData?.meta ?? null) : (listData?.meta ?? null)
+  const isDisplayLoading = isListLoading || (isListEmpty && !!searchTerm && isCityFallbackFetching)
+
+  const isEffectivelyEmpty = !isDisplayLoading && displayProperties.length === 0
+
+  // ── Suggestions ──────────────────────────────────────────────────────────────
+  // Show when even city fallback has 0 results — offer nearby Jujuy properties
   const { data: suggestionsData } = useQuery({
     queryKey: ['property-suggestions', baseFilters.operation_type, baseFilters.property_type],
     queryFn: () =>
@@ -201,7 +224,7 @@ function PropertiesContent() {
         operation_type: baseFilters.operation_type,
         property_type: baseFilters.property_type,
       }),
-    enabled: isListEmpty && hasGeoFilter,
+    enabled: isEffectivelyEmpty && hasGeoFilter,
     staleTime: 60_000,
   })
 
@@ -247,15 +270,16 @@ function PropertiesContent() {
           ].join(' ')}
         >
           <PropertyList
-            properties={listData?.data ?? []}
-            meta={listData?.meta ?? null}
-            isLoading={isListLoading}
+            properties={displayProperties}
+            meta={displayMeta}
+            isLoading={isDisplayLoading}
             currentPage={listFilters.page ?? 1}
             onPageChange={handlePageChange}
             activePropertyId={activePropertyId}
             onPropertyHover={setActivePropertyId}
             activeFilters={baseFilters}
-            suggestions={isListEmpty && hasGeoFilter ? (suggestionsData?.data ?? []) : []}
+            fallbackCity={isFallbackActive ? searchTerm : undefined}
+            suggestions={isEffectivelyEmpty && hasGeoFilter ? (suggestionsData?.data ?? []) : []}
             onClearFilters={handleClearFilters}
           />
         </div>

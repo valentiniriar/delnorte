@@ -14,6 +14,7 @@ interface PropertyListProps {
   activePropertyId?: string | null
   onPropertyHover?: (id: string | null) => void
   activeFilters?: PropertyFilters
+  fallbackCity?: string
   suggestions?: Property[]
   onClearFilters?: () => void
 }
@@ -32,6 +33,7 @@ export default function PropertyList({
   onPageChange,
   onPropertyHover,
   activeFilters,
+  fallbackCity,
   suggestions = [],
   onClearFilters,
 }: PropertyListProps) {
@@ -123,6 +125,15 @@ export default function PropertyList({
 
   return (
     <div className="flex flex-col h-full">
+      {/* Fallback note: search=X returned 0 but city=X found results */}
+      {fallbackCity && (
+        <div className="px-4 py-2.5 bg-secondary-fixed/20 border-b border-secondary-fixed/30 shrink-0 flex items-center gap-2">
+          <MapPin size={12} className="text-primary shrink-0" />
+          <p className="font-body text-xs text-primary leading-snug">
+            Mostrando propiedades en <span className="font-semibold capitalize">{fallbackCity}</span>
+          </p>
+        </div>
+      )}
       <div className="px-4 py-3 border-b border-outline-variant/20 shrink-0">
         <p className="font-body text-xs text-on-surface-variant">
           {meta?.total ?? properties.length}{' '}
