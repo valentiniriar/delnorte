@@ -10,6 +10,7 @@ import { useAgency } from '@/hooks/useAgency'
 const DEFAULT_WHATSAPP = '5493883321018'
 
 const NAV_LINKS = [
+  { href: '/', label: 'Inicio' },
   { href: '/propiedades', label: 'Propiedades' },
 ]
 
@@ -61,45 +62,42 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* ── Center nav (desktop) ── */}
-        <nav
-          className="hidden md:flex items-center gap-8"
-          aria-label="Navegación principal"
-        >
-          {NAV_LINKS.map(({ href, label }) => {
-            const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={isActive ? 'page' : undefined}
-                className={[
-                  'font-body text-sm font-medium tracking-wide transition-all duration-200',
-                  isActive
-                    ? 'text-secondary border-b-2 border-secondary pb-1'
-                    : 'text-on-surface-variant hover:text-primary',
-                ].join(' ')}
-              >
-                {label}
-              </Link>
-            )
-          })}
+        {/* ── Right: all nav + contact (desktop) ── */}
+        <div className="hidden md:flex items-center gap-8">
+          <nav className="flex items-center gap-8" aria-label="Navegación principal">
+            {NAV_LINKS.map(({ href, label }) => {
+              const isActive =
+                href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href)
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={[
+                    'font-body text-sm font-medium tracking-wide transition-all duration-200',
+                    isActive
+                      ? 'text-primary border-b-2 border-primary pb-1'
+                      : 'text-on-surface-variant hover:text-primary',
+                  ].join(' ')}
+                >
+                  {label}
+                </Link>
+              )
+            })}
 
-          <a
-            href={publishUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-body text-sm font-medium text-on-surface-variant hover:text-primary transition-colors tracking-wide"
-          >
-            Publicá tu propiedad
-          </a>
-        </nav>
+            <a
+              href={publishUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-body text-sm font-medium text-on-surface-variant hover:text-primary transition-colors tracking-wide"
+            >
+              Publicá tu propiedad
+            </a>
+          </nav>
 
-        {/* ── Right: contact button (desktop) ── */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-md font-body text-sm font-semibold hover:bg-primary-800 active:scale-[0.98] transition-all"
+            className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-md font-body text-sm font-semibold hover:bg-primary-800 active:scale-[0.98] transition-all shrink-0"
           >
             <MessageCircle size={15} />
             Contactar
@@ -121,8 +119,9 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-outline-variant/30 shadow-editorial">
           <nav className="container-wide py-4 flex flex-col" aria-label="Navegación móvil">
-            {[{ href: '/', label: 'Inicio' }, ...NAV_LINKS].map(({ href, label }) => {
-              const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
+            {NAV_LINKS.map(({ href, label }) => {
+              const isActive =
+                href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href)
               return (
                 <Link
                   key={href}
@@ -131,7 +130,7 @@ export default function Navbar() {
                   aria-current={isActive ? 'page' : undefined}
                   className={[
                     'font-body text-base py-4 border-b border-outline-variant/20 transition-colors',
-                    isActive ? 'text-secondary font-semibold' : 'text-on-surface-variant hover:text-primary',
+                    isActive ? 'text-primary font-semibold' : 'text-on-surface-variant hover:text-primary',
                   ].join(' ')}
                 >
                   {label}
