@@ -14,19 +14,19 @@ const OPERATION_STYLE: Record<
   { base: string; active: string; Icon: typeof Tag; label: string }
 > = {
   venta: {
-    base: 'bg-primary text-white border-primary hover:bg-secondary-fixed hover:text-primary',
-    active: 'bg-secondary-fixed text-primary border-secondary',
+    base: 'bg-primary text-white border-primary hover:bg-primary-800',
+    active: 'bg-secondary-fixed text-primary border-secondary-fixed',
     Icon: Tag,
     label: 'Venta',
   },
   alquiler: {
-    base: 'bg-secondary text-white border-secondary hover:bg-secondary-hover',
-    active: 'bg-secondary-fixed text-primary border-secondary',
+    base: 'bg-white text-primary border-primary/50 hover:bg-surface-container',
+    active: 'bg-secondary-fixed text-primary border-secondary-fixed',
     Icon: Key,
     label: 'Alquiler',
   },
   alquiler_temporal: {
-    base: 'bg-secondary-fixed text-primary border-secondary hover:bg-secondary hover:text-white',
+    base: 'bg-secondary-fixed text-primary border-secondary-fixed hover:opacity-90',
     active: 'bg-primary text-white border-primary',
     Icon: CalendarDays,
     label: 'Temporal',

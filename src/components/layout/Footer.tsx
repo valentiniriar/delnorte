@@ -64,8 +64,8 @@ export default function Footer() {
                 className="h-11 w-11 shrink-0"
                 aria-hidden="true"
               >
-                <path fill="#d8b699" d="M193.98,902.34h-32.64V177.66h0c209.13,0,378.66,169.53,378.66,378.66h0c0,191.1-154.92,346.02-346.02,346.02Z"/>
-                <path fill="rgba(255,255,255,0.8)" d="M918.66,902.34h-5.42c-206.14,0-373.24-167.11-373.24-373.24V177.66h378.66v724.68Z"/>
+                <path fill="white" d="M193.98,902.34h-32.64V177.66h0c209.13,0,378.66,169.53,378.66,378.66h0c0,191.1-154.92,346.02-346.02,346.02Z"/>
+                <path fill="white" d="M918.66,902.34h-5.42c-206.14,0-373.24-167.11-373.24-373.24V177.66h378.66v724.68Z"/>
               </svg>
               <div>
                 <p className="font-headline text-white text-2xl font-bold tracking-tight leading-none">

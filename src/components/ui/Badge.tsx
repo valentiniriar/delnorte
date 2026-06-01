@@ -9,7 +9,7 @@ interface BadgeProps {
 const typeStyles: Record<OperationType, string> = {
   venta: 'bg-primary text-white',
   alquiler: 'bg-secondary-fixed text-primary',
-  alquiler_temporal: 'bg-secondary text-white',
+  alquiler_temporal: 'bg-primary-900 text-white',
 }
 
 const typeLabels: Record<OperationType, string> = {

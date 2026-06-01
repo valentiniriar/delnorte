@@ -11,8 +11,8 @@ const config: Config = {
           900: '#2e3f53',
         },
         secondary: {
-          DEFAULT: '#7a5a3a',
-          hover: '#5c4220',
+          DEFAULT: '#4a5b73',
+          hover: '#3c4d63',
           dim: '#e8ccb0',
           fixed: '#d8b699',
         },
@@ -22,8 +22,8 @@ const config: Config = {
           900: '#2e3f53',
         },
         gold: {
-          DEFAULT: '#7a5a3a',
-          dark: '#5c4220',
+          DEFAULT: '#4a5b73',
+          dark: '#3c4d63',
         },
         surface: {
           DEFAULT: '#ffffff',
