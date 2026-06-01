@@ -3,10 +3,12 @@
 import { useState, Suspense, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { useQuery } from '@tanstack/react-query'
 import { MapPin, List, BedDouble, Maximize2, X } from 'lucide-react'
 import PropertyFilters from '@/components/properties/PropertyFilters'
 import PropertyList from '@/components/properties/PropertyList'
 import { useProperties, useMapProperties } from '@/hooks/useProperties'
+import { fetchProperties } from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
 import type { PropertyFilters as Filters, MapBounds, Property } from '@/types'
 
@@ -184,11 +186,34 @@ function PropertiesContent() {
   const { data: listData, isLoading: isListLoading } = useProperties(listFilters)
   const { data: mapData, isFetching: isMapFetching } = useMapProperties(mapFilters)
 
+  // Detect empty results with active geographic/text filter
+  const hasGeoFilter = !!(baseFilters.search || baseFilters.city)
+  const isListEmpty = !isListLoading && (listData?.data.length ?? 0) === 0
+
+  // Suggestions query: runs only when the main list returns 0 results with a geo filter
+  // Shows available properties with same operation type (ignoring location)
+  const { data: suggestionsData } = useQuery({
+    queryKey: ['property-suggestions', baseFilters.operation_type, baseFilters.property_type],
+    queryFn: () =>
+      fetchProperties({
+        per_page: 6,
+        page: 1,
+        operation_type: baseFilters.operation_type,
+        property_type: baseFilters.property_type,
+      }),
+    enabled: isListEmpty && hasGeoFilter,
+    staleTime: 60_000,
+  })
+
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', String(page))
     router.push(`/propiedades?${params.toString()}`, { scroll: false })
   }
+
+  const handleClearFilters = useCallback(() => {
+    router.push('/propiedades', { scroll: false })
+  }, [router])
 
   const handleBoundsChange = useCallback((bounds: MapBounds) => setMapBounds(bounds), [])
 
@@ -229,6 +254,9 @@ function PropertiesContent() {
             onPageChange={handlePageChange}
             activePropertyId={activePropertyId}
             onPropertyHover={setActivePropertyId}
+            activeFilters={baseFilters}
+            suggestions={isListEmpty && hasGeoFilter ? (suggestionsData?.data ?? []) : []}
+            onClearFilters={handleClearFilters}
           />
         </div>
       </div>
