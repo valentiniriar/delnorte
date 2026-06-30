@@ -167,8 +167,29 @@ export default function PropertyFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [searchValue, setSearchValue] = useState(searchParams.get('search') ?? '')
   const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // URL-derived search value (source of truth for chips / active state)
+  const urlSearch = searchParams.get('search') ?? ''
+
+  // Local input state — tracks what the user is typing
+  const [searchValue, setSearchValue] = useState(urlSearch)
+
+  // Sync local input when URL search is cleared from outside
+  // (e.g. "Ver todas las propiedades" button in PropertyList, which navigates
+  // without calling setSearchValue — without this the debounce re-applies the old term)
+  const prevUrlSearch = useRef(urlSearch)
+  const searchValueRef = useRef(searchValue)
+  searchValueRef.current = searchValue
+
+  useEffect(() => {
+    if (prevUrlSearch.current === urlSearch) return
+    prevUrlSearch.current = urlSearch
+    // Only sync when URL was cleared externally ('' signals an intentional clear)
+    if (urlSearch === '' && searchValueRef.current !== '') {
+      setSearchValue('')
+    }
+  }, [urlSearch])
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
@@ -189,19 +210,17 @@ export default function PropertyFilters() {
     [updateParams],
   )
 
-  // Keep a stable ref to updateParam so the debounce effect doesn't
-  // re-fire every time searchParams changes (which would recreate updateParam)
+  // Keep a stable ref to updateParam so the debounce doesn't re-fire on every searchParams change
   const updateParamRef = useRef(updateParam)
   useEffect(() => { updateParamRef.current = updateParam })
 
-  // Debounced search — deps are only searchValue + searchParams (not updateParam)
+  // Debounced search — syncs local input → URL
   useEffect(() => {
-    const current = searchParams.get('search') ?? ''
-    if (searchValue === current) return
+    if (searchValue === urlSearch) return
     if (searchValue && searchValue.length < 2) return
     const t = setTimeout(() => updateParamRef.current('search', searchValue), 300)
     return () => clearTimeout(t)
-  }, [searchValue, searchParams])
+  }, [searchValue, urlSearch])
 
   // Active filter introspection for chips
   const operation = searchParams.get('operation_type') ?? ''
@@ -209,7 +228,6 @@ export default function PropertyFilters() {
   const bedrooms = searchParams.get('bedrooms') ?? ''
   const minPrice = searchParams.get('min_price') ?? ''
   const maxPrice = searchParams.get('max_price') ?? ''
-  const search = searchParams.get('search') ?? ''
   const priceValue = `${minPrice}_${maxPrice}`
 
   const activeChips = useMemo(() => {
@@ -235,14 +253,14 @@ export default function PropertyFilters() {
         onRemove: () => updateParams({ min_price: '', max_price: '' }),
       })
     }
-    if (search) {
+    if (urlSearch) {
       chips.push({
-        key: 's', label: `"${search}"`,
+        key: 's', label: `"${urlSearch}"`,
         onRemove: () => { setSearchValue(''); updateParam('search', '') },
       })
     }
     return chips
-  }, [operation, propertyType, bedrooms, minPrice, maxPrice, priceValue, search, updateParam, updateParams])
+  }, [operation, propertyType, bedrooms, minPrice, maxPrice, priceValue, urlSearch, updateParam, updateParams])
 
   const activeCount = activeChips.length
   const hasActive = activeCount > 0
@@ -255,7 +273,7 @@ export default function PropertyFilters() {
   const clearSearch = () => {
     setSearchValue('')
     searchInputRef.current?.focus()
-    if (searchParams.get('search')) updateParam('search', '')
+    updateParam('search', '')
   }
 
   return (
@@ -348,7 +366,7 @@ export default function PropertyFilters() {
             />
           </div>
 
-          {/* Filters button (mobile + tablet + lg hides xl shows) */}
+          {/* Filters button (mobile + tablet) */}
           <button
             onClick={() => setMobileOpen(true)}
             className={cn(

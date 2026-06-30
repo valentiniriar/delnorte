@@ -51,7 +51,7 @@ export default function SearchSelect({
 
   return (
     <div ref={containerRef} className={cn('relative flex flex-col', className)}>
-      <input type="hidden" name={name} value={value} />
+      <input type="hidden" name={name} value={value} disabled={!value} />
 
       <span className="font-body text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold mb-1">
         {label}
